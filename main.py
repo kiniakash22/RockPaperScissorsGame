@@ -1,7 +1,8 @@
+from prettytable import PrettyTable
 import random
 
 print("Welcome to the game of Rock, Paper and Scissors!!!")
-print("Please tell me your name ^_^")
+print("Please tell me your name: ", end="")
 userName = input()
 
 print("Hello", userName, "! \nLets start the game")
@@ -15,6 +16,11 @@ rpsList = ["Rock", "Paper", "Scissors"]
 userPoints = 0
 computerPoints = 0
 
+# history list
+userHistory = []
+computerHistory = []
+winnerHistory = []
+
 while totalRounds > 0:
     print("Press:\n1. Rock\n2. Paper\n3. Scissor")
     userTurn = int(input())
@@ -22,17 +28,39 @@ while totalRounds > 0:
         print("Incorrect option selected! Please enter the choice again")
         continue
     computerTurn = random.choice([1, 2, 3])
-    print("Computer Choose: ", rpsList[computerTurn - 1])
-    print("You Choose: ", rpsList[userTurn - 1])
+
+# update history list for user and computer
+    computerHistory.append(rpsList[computerTurn - 1])
+    userHistory.append(rpsList[userTurn - 1])
 
     if userTurn == computerTurn:                    # if both the party choose same value
-        print("It's a TIE!s")
+        winnerHistory.append("Tie")
     elif (userTurn % 3) < (computerTurn % 3):       # using MOD operator to determine computer as the winner
         computerPoints += 1
-        print("I WON!!!")
+        winnerHistory.append("Computer")
     else:                                           # when user wins
         userPoints += 1
-        print("You WON", userName, "!")
+        winnerHistory.append(userName)
+
+    historyTable = PrettyTable(["Round No.", userName + " selected", "Computer selected", "Winner"])
+
+    # add rows to the game history table
+    for i in range(0, len(userHistory)):
+        historyTable.add_row([i + 1, userHistory[i], computerHistory[i], winnerHistory[i]])
+
+    print(historyTable)
 
     # Update total round counter
     totalRounds -= 1
+
+print("Final points are as follows:\n", userName, ": ",userPoints, "\nComputer: ", computerPoints, sep="")
+print("And the Winner is...")
+if userPoints > computerPoints:
+    print(userName)
+elif userPoints < computerPoints:
+    print("Computer")
+else:
+    print("No one! It's a Tie!")
+
+#clearing table
+historyTable.clear_rows()
